@@ -39,11 +39,9 @@ public class DeputadoAdapter extends RecyclerView.Adapter<DeputadoAdapter.Deputa
 
         Picasso.get()
                 .load(deputado.getUrlFoto())
-                .resize(80, 100)
+                .resize(150, 200)
                 .centerCrop()
                 .into(deputadoHolder.img);
-//        new DataStore.DownloadImageTask(deputadoHolder.img)
-//                .execute(deputado.getUrlFoto());
     }
 
     @Override

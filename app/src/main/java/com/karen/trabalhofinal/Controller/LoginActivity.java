@@ -45,7 +45,6 @@ public class LoginActivity extends BaseActivity implements
 
         // [START initialize_auth]
         // Initialize Firebase Auth
-//        mAuth = FirebaseAuth.getInstance();
         mAuth = DataStore.sharedInstance().connectFirebase();
         // [END initialize_auth]
     }
