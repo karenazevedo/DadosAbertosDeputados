@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "600850208301",
+    "firebase_url": "https://trabalhofinal-5c1f1.firebaseio.com",
+    "project_id": "trabalhofinal-5c1f1",
+    "storage_bucket": "trabalhofinal-5c1f1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:600850208301:android:916ca64f9359df25",
+        "android_client_info": {
+          "package_name": "com.karen.trabalhofinal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "600850208301-suoasjtvrr29vn5a4d0016cngeqo7mng.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.karen.trabalhofinal",
+            "certificate_hash": "3dbe528d6309bbc771a8326d0e63c0a7de348415"
+          }
+        },
+        {
+          "client_id": "600850208301-l3h4d84v7ct0a3c7v9obkguguc644d2c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqvgzDMCyiRNcuLQZiuV65QDp77gY26_4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "600850208301-l3h4d84v7ct0a3c7v9obkguguc644d2c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
