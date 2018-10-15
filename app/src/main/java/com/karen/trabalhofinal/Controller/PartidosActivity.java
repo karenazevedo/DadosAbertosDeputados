@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.karen.trabalhofinal.Interfaces.LoadReceiverDelegate;
 import com.karen.trabalhofinal.Model.DataStore;
+import com.karen.trabalhofinal.Model.InfoDeputado;
 import com.karen.trabalhofinal.R;
 import com.karen.trabalhofinal.View.PartidoAdapter;
 
@@ -49,5 +50,10 @@ public class PartidosActivity extends AppCompatActivity implements LoadReceiverD
     @Override
     public void setLoadStatus(boolean status) {
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void processFinish(InfoDeputado result) {
+
     }
 }

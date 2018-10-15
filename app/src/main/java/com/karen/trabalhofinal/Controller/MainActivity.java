@@ -1,13 +1,19 @@
 package com.karen.trabalhofinal.Controller;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -36,6 +42,8 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView recyclerView;
     private DeputadoAdapter adapter;
     private Integer page = 1;
+    private GestureDetector gestureDetector;
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +95,50 @@ public class MainActivity extends AppCompatActivity
                     DataStore.sharedInstance().setContext(MainActivity.this, MainActivity.this, page);
 
                 }
+            }
+        });
+
+        gestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
+
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+
+                View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
+                position = recyclerView.getChildAdapterPosition(view);
+
+                Intent intent = new Intent(MainActivity.this, InfoDeputadoActivity.class);
+
+                Deputado deputado = DataStore.sharedInstance().getDeputado(position);
+
+                intent.putExtra("id", deputado.getId());
+                intent.putExtra("nome", deputado.getNome());
+                intent.putExtra("partido", deputado.getSiglaPartido());
+
+                startActivityForResult(intent, 1);
+
+                return true;
+            }
+
+        });
+
+        recyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+
+            @Override
+            public boolean onInterceptTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
+
+                View view = recyclerView.findChildViewUnder(motionEvent.getX(), motionEvent.getY());
+
+                return (view != null && gestureDetector.onTouchEvent(motionEvent));
+            }
+
+            @Override
+            public void onTouchEvent(@NonNull RecyclerView recyclerView, @NonNull MotionEvent motionEvent) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean b) {
+
             }
         });
 
@@ -157,5 +209,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void setLoadStatus(boolean status) {
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void processFinish(InfoDeputado result) {
+
     }
 }

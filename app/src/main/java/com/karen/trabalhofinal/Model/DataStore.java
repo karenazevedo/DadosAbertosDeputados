@@ -23,7 +23,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DataStore {
@@ -67,6 +70,12 @@ public class DataStore {
         if (delegate != null) new LoadPartidos(delegate).execute("https://dadosabertos.camara.leg.br/api/v2/partidos?itens=1000&ordem=ASC&ordenarPor=sigla");
     }
 
+    public void setContextInfoDeputado(Context context, LoadReceiverDelegate delegate, Long id) {
+
+        this.context = context;
+        if (delegate != null) new LoadInfoDeputado(delegate).execute("https://dadosabertos.camara.leg.br/api/v2/deputados/"+ id);
+    }
+
     public List<Deputado> getDeputados() {
 
         return deputados;
@@ -86,6 +95,12 @@ public class DataStore {
 
         return mAuth;
     }
+
+    public Deputado getDeputado(int position) {
+
+        return deputados.get(position);
+    }
+
 
     //funções de acesso à API web
     private class LoadDeputados extends AsyncTask<String, Void, String> {
@@ -217,6 +232,59 @@ public class DataStore {
         }
     }
 
+    //funções de acesso à API web
+    private class LoadInfoDeputado extends AsyncTask<String, Void, String> {
+
+        private LoadReceiverDelegate delegate;
+
+        public LoadInfoDeputado(LoadReceiverDelegate delegate) {
+
+            this.delegate = delegate;
+        }
+
+        @Override
+        protected String doInBackground(String... urls) {
+
+            return backgroudAPI(urls);
+        }
+
+        @Override
+        protected void onPostExecute(String jsonStr) {
+            super.onPostExecute(jsonStr);
+
+            try {
+                JSONObject json = new JSONObject(jsonStr);
+                JSONObject dadosDeputado = json.getJSONObject("dados");
+
+                Long id = dadosDeputado.getLong("id");
+                String nomeCivil = dadosDeputado.getString("nomeCivil");
+
+                String dataNascimento = dadosDeputado.getString("dataNascimento");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                Date nasc = null;
+
+                try {
+                    nasc = sdf.parse(dataNascimento);
+                } catch (ParseException e) {
+
+                }
+
+                String municipioNascimento = dadosDeputado.getString("municipioNascimento");
+                String ufNascimento = dadosDeputado.getString("ufNascimento");
+                String escolaridade = dadosDeputado.getString("escolaridade");
+
+                InfoDeputado info = new InfoDeputado(nomeCivil, nasc, municipioNascimento, ufNascimento, escolaridade);
+                info.id = id;
+
+//                delegate.setLoadStatus(true);
+                delegate.processFinish(info);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+                delegate.setLoadStatus(false);
+            }
+        }
+    }
 
     private String backgroudAPI(String... urls) {
 

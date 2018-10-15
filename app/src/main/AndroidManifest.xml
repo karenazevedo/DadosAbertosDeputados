@@ -19,6 +19,7 @@
         </activity>
         <activity android:name=".Controller.DespesaActivity" />
         <activity android:name=".Controller.PartidosActivity"/>
+        <activity android:name=".Controller.InfoDeputadoActivity"/>
         <activity android:name=".Controller.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
