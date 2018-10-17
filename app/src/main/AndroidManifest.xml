@@ -13,19 +13,25 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Controller.SplashActivity"
+            android:label="App Candidatos">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".Controller.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name=".Controller.DespesaActivity" />
-        <activity android:name=".Controller.PartidosActivity"/>
-        <activity android:name=".Controller.InfoDeputadoActivity"/>
-        <activity android:name=".Controller.LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <activity android:name=".Controller.PartidosActivity" />
+        <activity android:name=".Controller.InfoDeputadoActivity" />
+        <activity android:name=".Controller.RankingActivity" />
+        <activity android:name=".Controller.SignUpActivity"
+            android:theme="@style/AppTheme.Dark"/>
+        <activity android:name=".Controller.LoginActivity" android:theme="@style/AppTheme.Dark">
         </activity>
     </application>
 

@@ -4,10 +4,18 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.util.JsonReader;
 import android.util.Log;
 import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.karen.trabalhofinal.Interfaces.LoadReceiverDelegate;
 import com.karen.trabalhofinal.R;
 import com.squareup.picasso.Picasso;
@@ -26,6 +34,8 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -36,8 +46,11 @@ public class DataStore {
     private List<Deputado> deputados = new ArrayList<>();
     private List<Despesa> despesas = new ArrayList<>();
     private List<Partido> partidos = new ArrayList<>();
+    private List<JSONObject> ranking = new ArrayList<>();
     private Context context;
     private FirebaseAuth mAuth;
+    private FirebaseDatabase database;
+    private DatabaseReference myRef;
 
     protected DataStore() {}
 
@@ -74,6 +87,72 @@ public class DataStore {
 
         this.context = context;
         if (delegate != null) new LoadInfoDeputado(delegate).execute("https://dadosabertos.camara.leg.br/api/v2/deputados/"+ id);
+    }
+
+    public void setContextRanking(Context context) {
+        this.context = context;
+        getDataFirebase();
+    }
+
+    private void getDataFirebase() {
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference();
+
+        myRef.child("data").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                ArrayList value = (ArrayList) snapshot.getValue();
+
+                for(int i = 0; i < value.size(); i++) {
+
+                    JSONObject rank = new JSONObject();
+
+                    Long idDeputado = ((Long) ((ArrayList) value.get(i)).get(17)).longValue();
+                    Double despesa = ((Double) ((ArrayList) value.get(i)).get(14)).doubleValue();
+                    String tipoDespesa = ((String) ((ArrayList) value.get(i)).get(11));
+
+                    try {
+                        rank.put("idDeputado", idDeputado);
+                        rank.put("despesa", despesa);
+                        rank.put("tipo", tipoDespesa);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    ranking.add(rank);
+                }
+
+                Collections.sort(ranking, new Comparator<JSONObject>() {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                    @Override
+                    public int compare(JSONObject jsonObjectA, JSONObject jsonObjectB) {
+                        int compare = 0;
+                        try
+                        {
+                            int keyA = jsonObjectA.getInt("despesa");
+                            int keyB = jsonObjectB.getInt("despesa");
+                            compare = Long.compare(keyA, keyB);
+                        }
+                        catch(JSONException e)
+                        {
+                            e.printStackTrace();
+                        }
+                        return -compare;
+                    }
+                });
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("Ranking", "Failed to read value.", databaseError.toException());
+            }
+        });
+
+    }
+
+    public List<JSONObject> getRanking() {
+
+        return ranking;
     }
 
     public List<Deputado> getDeputados() {
