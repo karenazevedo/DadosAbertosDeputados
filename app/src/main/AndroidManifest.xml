@@ -33,6 +33,9 @@
             android:theme="@style/AppTheme.Dark"/>
         <activity android:name=".Controller.LoginActivity" android:theme="@style/AppTheme.Dark">
         </activity>
+        <provider android:authorities="com.facebook.app.FacebookContentProvider{2137569999843241}"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
     </application>
 
 </manifest>

@@ -7,36 +7,31 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
+import com.karen.trabalhofinal.Interfaces.LoadReceiverDelegate;
 import com.karen.trabalhofinal.Model.DataStore;
-import com.karen.trabalhofinal.Model.Despesa;
+import com.karen.trabalhofinal.Model.InfoDeputado;
 import com.karen.trabalhofinal.R;
 import com.karen.trabalhofinal.View.DespesaAdapter;
 
-import java.util.List;
 
-public class DespesaActivity extends AppCompatActivity {
+public class DespesaActivity extends AppCompatActivity implements LoadReceiverDelegate {
 
     private RecyclerView recyclerView;
     private DespesaAdapter adapter;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onStart() {
+        super.onStart();
 
         setContentView(R.layout.activity_despesa);
-
-        DataStore.sharedInstance().setContext(this, null, 1);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Despesas");
 
-    }
+        long id =  getIntent().getLongExtra("id", 0);
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+        DataStore.sharedInstance().setContextDespesas(this, this, id);
 
         setContentView(R.layout.activity_despesa);
         recyclerView = findViewById(R.id.listDespesas);
@@ -47,5 +42,15 @@ public class DespesaActivity extends AppCompatActivity {
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);
+    }
+
+    @Override
+    public void setLoadStatus(boolean status) {
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void processFinish(InfoDeputado result) {
+
     }
 }

@@ -24,6 +24,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.HorizontalScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity
     private Integer page = 1;
     private GestureDetector gestureDetector;
     private int position;
+    private TextView txtSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,15 +53,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -182,11 +175,7 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_gallery) {
-            Intent intent = new Intent(MainActivity.this, DespesaActivity.class);
-            startActivity(intent);
-
-        } else if (id == R.id.nav_partidos) {
+        if (id == R.id.nav_partidos) {
             Intent intent = new Intent(MainActivity.this, PartidosActivity.class);
             startActivity(intent);
 
@@ -197,8 +186,6 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
 
-        } else if (id == R.id.nav_send) {
-
         } else if (id == R.id.nav_ranking) {
 
             Intent intent = new Intent(MainActivity.this, RankingActivity.class);
@@ -208,6 +195,16 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void findByText(View v) {
+
+        txtSearch = findViewById(R.id.txtSearch);
+
+        String name = String.valueOf(txtSearch.getText());
+
+        DataStore.sharedInstance().findByName(name, MainActivity.this);
+        adapter.notifyDataSetChanged();
     }
 
     @Override

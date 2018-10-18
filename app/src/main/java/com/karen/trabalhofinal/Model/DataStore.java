@@ -1,14 +1,10 @@
 package com.karen.trabalhofinal.Model;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-import android.util.JsonReader;
 import android.util.Log;
-import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -17,9 +13,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.karen.trabalhofinal.Interfaces.LoadReceiverDelegate;
-import com.karen.trabalhofinal.R;
-import com.squareup.picasso.Picasso;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -81,6 +74,13 @@ public class DataStore {
 
         this.context = context;
         if (delegate != null) new LoadPartidos(delegate).execute("https://dadosabertos.camara.leg.br/api/v2/partidos?itens=1000&ordem=ASC&ordenarPor=sigla");
+    }
+
+    public void setContextDespesas(Context context, LoadReceiverDelegate delegate, long id) {
+
+        this.context = context;
+
+        if (delegate != null) new LoadDespesas(delegate).execute("https://dadosabertos.camara.leg.br/api/v2/deputados/" + id + "/despesas?itens=1000&ordem=ASC&ordenarPor=ano");
     }
 
     public void setContextInfoDeputado(Context context, LoadReceiverDelegate delegate, Long id) {
@@ -180,6 +180,19 @@ public class DataStore {
         return deputados.get(position);
     }
 
+    public List<Deputado> findByName(String name, LoadReceiverDelegate delegate) {
+
+        deputados.clear();
+        new LoadDeputados(delegate, 1).execute("https://dadosabertos.camara.leg.br/api/v2/deputados?pagina="+ 1 + "&nome=" + name + "&ordem=ASC&ordenarPor=nome");
+
+        List<Deputado> newDeputados = this.getDeputados();
+
+        for (Deputado d : newDeputados) {
+            newDeputados.add(d);
+        }
+        return newDeputados;
+    }
+
 
     //funções de acesso à API web
     private class LoadDeputados extends AsyncTask<String, Void, String> {
@@ -216,8 +229,6 @@ public class DataStore {
                     Deputado newDeputado = new Deputado(nome, partido, foto);
                     newDeputado.setId(id);
                     deputados.add(newDeputado);
-
-                    new LoadDespesas(delegate).execute("https://dadosabertos.camara.leg.br/api/v2/deputados/" + id + "/despesas?ordem=ASC&ordenarPor=ano");
                 }
                 delegate.setLoadStatus(true);
             } catch (JSONException e) {

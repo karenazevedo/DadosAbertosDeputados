@@ -50,6 +50,7 @@ public class SignUpActivity extends BaseActivity implements
     private FirebaseAuth mAuth;
     // [END declare_auth]
 
+    private FirebaseDatabase database;
     private DatabaseReference myRef;
 
 
@@ -67,16 +68,21 @@ public class SignUpActivity extends BaseActivity implements
         findViewById(R.id.link_login).setOnClickListener(this);
         findViewById(R.id.btn_signup).setOnClickListener(this);
 
-        // [START initialize_auth]
-        // Initialize Firebase Auth
-        mAuth = DataStore.sharedInstance().connectFirebase();
-        // [END initialize_auth]
     }
 
     // [START on_start_check_user]
     @Override
     public void onStart() {
         super.onStart();
+
+        // [START initialize_auth]
+        // Initialize Firebase Auth
+        mAuth = DataStore.sharedInstance().connectFirebase();
+        // [END initialize_auth]
+
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference();
+
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);

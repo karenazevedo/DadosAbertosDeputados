@@ -27,8 +27,7 @@ public class RankingActivity extends AppCompatActivity implements LoadReceiverDe
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Ranking de Despesas");
+
 
     }
 
@@ -37,6 +36,9 @@ public class RankingActivity extends AppCompatActivity implements LoadReceiverDe
         super.onStart();
 
         DataStore.sharedInstance().setContextRanking(this);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Ranking de Despesas - 2017");
 
         setContentView(R.layout.activity_ranking);
         recyclerView = findViewById(R.id.listRanking);

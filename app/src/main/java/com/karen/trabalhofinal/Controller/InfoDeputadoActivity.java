@@ -1,23 +1,26 @@
 package com.karen.trabalhofinal.Controller;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.app.AppCompatActivity;
+
+import android.view.View;
 import android.widget.TextView;
 
+import com.facebook.share.model.ShareLinkContent;
 import com.karen.trabalhofinal.Interfaces.LoadReceiverDelegate;
 import com.karen.trabalhofinal.Model.DataStore;
 import com.karen.trabalhofinal.Model.InfoDeputado;
-import com.karen.trabalhofinal.Model.Partido;
+
 import com.karen.trabalhofinal.R;
-import com.karen.trabalhofinal.View.PartidoAdapter;
 
-import java.util.List;
 
-public class InfoDeputadoActivity extends BaseActivity implements LoadReceiverDelegate {
+public class InfoDeputadoActivity extends AppCompatActivity implements LoadReceiverDelegate {
 
     private TextView nome;
     private TextView nomeCivil;
@@ -33,10 +36,6 @@ public class InfoDeputadoActivity extends BaseActivity implements LoadReceiverDe
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
 
-        setContentView(R.layout.activity_info_deputado);
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Informaçoes do Deputado");
 
     }
 
@@ -44,11 +43,39 @@ public class InfoDeputadoActivity extends BaseActivity implements LoadReceiverDe
     protected void onStart() {
         super.onStart();
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Informaçoes do Deputado");
+
         id = getIntent().getLongExtra("id", 0);
 
         DataStore.sharedInstance().setContextInfoDeputado(this, this, id);
 
         setContentView(R.layout.activity_info_deputado);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ShareLinkContent content = new ShareLinkContent.Builder()
+                        .setContentUrl(Uri.parse("https://developers.facebook.com"))
+                        .build();
+            }
+        });
+
+
+        FloatingActionButton desp = (FloatingActionButton) findViewById(R.id.desp);
+
+        desp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(InfoDeputadoActivity.this, DespesaActivity.class);
+
+                intent.putExtra("id", id);
+
+                startActivity(intent);
+            }
+        });
 
     }
 

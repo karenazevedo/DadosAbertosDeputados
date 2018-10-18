@@ -23,16 +23,14 @@ public class PartidosActivity extends AppCompatActivity implements LoadReceiverD
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
 
-        setContentView(R.layout.activity_partido);
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Partidos");
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Partidos");
 
         DataStore.sharedInstance().setContextPartidos(this, this);
 

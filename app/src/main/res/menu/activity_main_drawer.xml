@@ -5,10 +5,6 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Despesas" />
-        <item
             android:id="@+id/nav_partidos"
             android:icon="@drawable/ic_menu_gallery"
             android:title="Partidos" />
@@ -24,10 +20,6 @@
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
                 android:title="Sair" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
         </menu>
     </item>
 
