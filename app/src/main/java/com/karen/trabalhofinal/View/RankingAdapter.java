@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.karen.trabalhofinal.Model.DataStore;
 import com.karen.trabalhofinal.Model.Partido;
+import com.karen.trabalhofinal.Model.Ranking;
 import com.karen.trabalhofinal.R;
 
 import org.json.JSONException;
@@ -19,7 +20,7 @@ import java.util.List;
 
 public class RankingAdapter extends RecyclerView.Adapter<RankingAdapter.RankingHolder> {
 
-    private List<JSONObject> ranking = DataStore.sharedInstance().getRanking();
+    private List<Ranking> ranking = DataStore.sharedInstance().getRanking();
 
     @NonNull
     @Override
@@ -34,14 +35,12 @@ public class RankingAdapter extends RecyclerView.Adapter<RankingAdapter.RankingH
     @Override
     public void onBindViewHolder(@NonNull RankingHolder rankingHolder, int position) {
 
-        JSONObject obj = ranking.get(position);
+        Ranking obj = ranking.get(position);
 
-        try {
-            if (obj.get("despesa") != null) rankingHolder.despesa.setText(obj.get("despesa").toString());
-            if (obj.get("tipo") != null) rankingHolder.tipo.setText(obj.get("tipo").toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        rankingHolder.despesa.setText(String.valueOf(obj.despesa));
+        rankingHolder.tipo.setText(obj.tipoDespesa);
+        rankingHolder.nome.setText(obj.nome);
+
     }
 
     @Override
@@ -54,12 +53,14 @@ public class RankingAdapter extends RecyclerView.Adapter<RankingAdapter.RankingH
 
         TextView despesa;
         TextView tipo;
+        TextView nome;
 
         public RankingHolder(@NonNull View itemView) {
             super(itemView);
 
             despesa = itemView.findViewById(R.id.txtValorDespesa);
             tipo = itemView.findViewById(R.id.txtTipoDespesa);
+            nome = itemView.findViewById(R.id.txtNomeDeputado);
         }
     }
 }

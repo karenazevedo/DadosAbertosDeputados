@@ -6,19 +6,19 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_partidos"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_donut_large_black_24dp"
             android:title="Partidos" />
         <item
             android:id="@+id/nav_ranking"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_trending_up_black_24dp"
             android:title="Ranking" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Opções Gerais">
         <menu>
             <item
                 android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/ic_power_settings_new_black_24dp"
                 android:title="Sair" />
         </menu>
     </item>

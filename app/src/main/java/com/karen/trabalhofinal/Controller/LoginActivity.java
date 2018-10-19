@@ -131,6 +131,7 @@ public class LoginActivity extends BaseActivity implements
             Toast.makeText(LoginActivity.this, R.string.firebase_status_fmt + user.getUid(), Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            intent.putExtra("user", user.getEmail());
             startActivity(intent);
         } else {
             Toast.makeText(LoginActivity.this, R.string.sign_out, Toast.LENGTH_SHORT).show();

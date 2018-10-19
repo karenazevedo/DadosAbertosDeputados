@@ -35,6 +35,7 @@ public class DespesaAdapter extends RecyclerView.Adapter<DespesaAdapter.DespesaH
 
         if (despesa.tipoDespesa != null) despesaHolder.txtTipoDocumento.setText(despesa.tipoDespesa);
         if (despesa.valorDocumento != null) despesaHolder.txtValor.setText(String.valueOf(despesa.valorDocumento));
+        if (despesa.dataDocumento != null) despesaHolder.txtDataDocumento.setText(String.valueOf(despesa.dataDocumento));
     }
 
     @Override
@@ -47,12 +48,14 @@ public class DespesaAdapter extends RecyclerView.Adapter<DespesaAdapter.DespesaH
 
         TextView txtTipoDocumento;
         TextView txtValor;
+        TextView txtDataDocumento;
 
         public DespesaHolder(@NonNull View itemView) {
             super(itemView);
 
             txtTipoDocumento = itemView.findViewById(R.id.txtTipoDespesa);
             txtValor = itemView.findViewById(R.id.txtValor);
+            txtDataDocumento = itemView.findViewById(R.id.txtDataDocumento);
         }
     }
 }

@@ -7,8 +7,11 @@ import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.app.AppCompatActivity;
 
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,8 +19,15 @@ import com.facebook.share.model.ShareLinkContent;
 import com.karen.trabalhofinal.Interfaces.LoadReceiverDelegate;
 import com.karen.trabalhofinal.Model.DataStore;
 import com.karen.trabalhofinal.Model.InfoDeputado;
+import com.karen.trabalhofinal.Model.Partido;
 
 import com.karen.trabalhofinal.R;
+import com.karen.trabalhofinal.View.PartidoAdapter;
+
+import java.util.List;
+
+import io.github.yavski.fabspeeddial.FabSpeedDial;
+import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
 
 public class InfoDeputadoActivity extends AppCompatActivity implements LoadReceiverDelegate {
@@ -45,37 +55,32 @@ public class InfoDeputadoActivity extends AppCompatActivity implements LoadRecei
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Informaçoes do Deputado");
-
+        
         id = getIntent().getLongExtra("id", 0);
 
         DataStore.sharedInstance().setContextInfoDeputado(this, this, id);
 
         setContentView(R.layout.activity_info_deputado);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-
-        fab.setOnClickListener(new View.OnClickListener() {
+        FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.desp);
+        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override
-            public void onClick(View view) {
-                ShareLinkContent content = new ShareLinkContent.Builder()
-                        .setContentUrl(Uri.parse("https://developers.facebook.com"))
-                        .build();
+            public boolean onMenuItemSelected(MenuItem menuItem) {
+
+                if (menuItem.toString().equals("Despesas")) {
+
+                    Intent intent = new Intent(InfoDeputadoActivity.this, DespesaActivity.class);
+
+                    intent.putExtra("id", id);
+
+                    startActivity(intent);
+
+                }
+
+                return false;
             }
         });
 
-
-        FloatingActionButton desp = (FloatingActionButton) findViewById(R.id.desp);
-
-        desp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(InfoDeputadoActivity.this, DespesaActivity.class);
-
-                intent.putExtra("id", id);
-
-                startActivity(intent);
-            }
-        });
 
     }
 

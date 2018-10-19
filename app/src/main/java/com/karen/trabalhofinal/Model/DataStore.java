@@ -39,7 +39,7 @@ public class DataStore {
     private List<Deputado> deputados = new ArrayList<>();
     private List<Despesa> despesas = new ArrayList<>();
     private List<Partido> partidos = new ArrayList<>();
-    private List<JSONObject> ranking = new ArrayList<>();
+    private List<Ranking> ranking = new ArrayList<>();
     private Context context;
     private FirebaseAuth mAuth;
     private FirebaseDatabase database;
@@ -89,58 +89,46 @@ public class DataStore {
         if (delegate != null) new LoadInfoDeputado(delegate).execute("https://dadosabertos.camara.leg.br/api/v2/deputados/"+ id);
     }
 
-    public void setContextRanking(Context context) {
+    public void setContextRanking(Context context, LoadReceiverDelegate delegate) {
         this.context = context;
-        getDataFirebase();
+        getDataFirebase(delegate);
     }
 
-    private void getDataFirebase() {
+    private void getDataFirebase(final LoadReceiverDelegate delegate) {
+
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
+        ranking.clear();
 
-        myRef.child("data").addValueEventListener(new ValueEventListener() {
+        myRef.child("ranking").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
-                ArrayList value = (ArrayList) snapshot.getValue();
 
-                for(int i = 0; i < value.size(); i++) {
+                for (DataSnapshot messageSnapshot: snapshot.getChildren()) {
+                    Double despesa = Double.parseDouble(messageSnapshot.child("despesa").getValue().toString());
+                    String tipo = (String) messageSnapshot.child("tipoDespesa").getValue();
+                    String data = (String) messageSnapshot.child("dataDocumento").getValue();
+                    String nome = (String) messageSnapshot.child("nome").getValue();
 
-                    JSONObject rank = new JSONObject();
-
-                    Long idDeputado = ((Long) ((ArrayList) value.get(i)).get(17)).longValue();
-                    Double despesa = ((Double) ((ArrayList) value.get(i)).get(14)).doubleValue();
-                    String tipoDespesa = ((String) ((ArrayList) value.get(i)).get(11));
-
-                    try {
-                        rank.put("idDeputado", idDeputado);
-                        rank.put("despesa", despesa);
-                        rank.put("tipo", tipoDespesa);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
+                    Ranking rank = new Ranking(Long.parseLong(messageSnapshot.getKey()), despesa, tipo, data, nome);
                     ranking.add(rank);
+
                 }
 
-                Collections.sort(ranking, new Comparator<JSONObject>() {
-                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                Collections.sort(ranking, new Comparator<Ranking>() {
+
                     @Override
-                    public int compare(JSONObject jsonObjectA, JSONObject jsonObjectB) {
-                        int compare = 0;
-                        try
-                        {
-                            int keyA = jsonObjectA.getInt("despesa");
-                            int keyB = jsonObjectB.getInt("despesa");
-                            compare = Long.compare(keyA, keyB);
-                        }
-                        catch(JSONException e)
-                        {
-                            e.printStackTrace();
-                        }
-                        return -compare;
+                    public int compare(Ranking o1, Ranking o2) {
+                        return -1 * Double.compare(o1.despesa, o2.despesa);
                     }
+
                 });
+
+                delegate.setLoadStatus(true);
+
+                Log.d("Ranking", "values." + ranking);
+
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -150,7 +138,7 @@ public class DataStore {
 
     }
 
-    public List<JSONObject> getRanking() {
+    public List<Ranking> getRanking() {
 
         return ranking;
     }
@@ -267,8 +255,9 @@ public class DataStore {
                     Long valorLiquido = despesa.getLong("valorLiquido");
                     Long valorDocumento = despesa.getLong("valorDocumento");
                     String tipoDespesa = despesa.getString("tipoDespesa");
+                    String dataDocumento = despesa.getString("dataDocumento");
 
-                    Despesa newDespesa = new Despesa(valorDocumento, valorLiquido, tipoDespesa);
+                    Despesa newDespesa = new Despesa(valorDocumento, valorLiquido, tipoDespesa, dataDocumento);
                     newDespesa.setIdDocumento(id);
                     despesas.add(newDespesa);
                 }
@@ -350,23 +339,14 @@ public class DataStore {
                 String nomeCivil = dadosDeputado.getString("nomeCivil");
 
                 String dataNascimento = dadosDeputado.getString("dataNascimento");
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Date nasc = null;
-
-                try {
-                    nasc = sdf.parse(dataNascimento);
-                } catch (ParseException e) {
-
-                }
 
                 String municipioNascimento = dadosDeputado.getString("municipioNascimento");
                 String ufNascimento = dadosDeputado.getString("ufNascimento");
                 String escolaridade = dadosDeputado.getString("escolaridade");
 
-                InfoDeputado info = new InfoDeputado(nomeCivil, nasc, municipioNascimento, ufNascimento, escolaridade);
+                InfoDeputado info = new InfoDeputado(nomeCivil, dataNascimento, municipioNascimento, ufNascimento, escolaridade);
                 info.id = id;
 
-//                delegate.setLoadStatus(true);
                 delegate.processFinish(info);
 
             } catch (JSONException e) {

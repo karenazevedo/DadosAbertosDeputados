@@ -35,7 +35,7 @@ public class RankingActivity extends AppCompatActivity implements LoadReceiverDe
     protected void onStart() {
         super.onStart();
 
-        DataStore.sharedInstance().setContextRanking(this);
+        DataStore.sharedInstance().setContextRanking(this, this);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Ranking de Despesas - 2017");
